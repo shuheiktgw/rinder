@@ -1,6 +1,6 @@
 require 'spec_helper'
-require_relative '../../lib/rinder/profile/profile'
-require_relative '../../lib/rinder/profile/photo'
+require_relative '../../lib/rinder/profile/user_profile'
+require_relative '../../lib/rinder/profile/photo/user_photo'
 
 RSpec.describe UserProfile do
   # FIXME: Write helper to fetch the real recs in order to guarantee this mode is up-to-date.
@@ -83,13 +83,13 @@ RSpec.describe UserProfile do
       "birth_date_info": "fuzzy birthdate active, not displaying real birth_date"
     }
   }
-  let(:profile) { Profile.new(data) }
+  let(:profile) { UserProfile.new(data) }
 
   describe '#initialize' do
     it 'should have the expected properties' do
-      Profile::PROPERTIES.each do |p|
-        if 'photos'
-          expect(profile.photos).to eq(data[:photos].map { |p| Photo.new(p) })
+      UserProfile::PROPERTIES.each do |p|
+        if p == 'photos'
+          expect(profile.photos).to eq(data[:photos].map { |p| UserPhoto.new(p) })
         elsif p == 'birth_date' || p == 'ping_time'
           eval "expect(profile.#{p}).to eq(DateTime.parse(data[#{':' + p}]))"
         else
