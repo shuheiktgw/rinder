@@ -23,7 +23,7 @@ class Request
 
   def recommendations
     res = get URLS[:recs], x_auth_token
-    users = res["results"].each{|r| Profile.new(r)}
+    users = res["results"].each { |r| Profile.new(r) }
   end
 
   private

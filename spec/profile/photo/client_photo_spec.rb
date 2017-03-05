@@ -1,14 +1,16 @@
 require 'spec_helper'
-require_relative '../../lib/rinder/Profile/photo'
+require_relative '../../../lib/rinder/profile/photo/client_photo'
 
-RSpec.describe Photo do
+RSpec.describe ClientPhoto do
   let(:data){
     {
       "id": "fea4f480-7ce0-4143-a310-a03c2b2cdbc6",
-      "main": true,
-      "crop": "source",
-      "fileName": "fea4f480-7ce0-4143-a310-a03c2b2cdbc6.jpg",
+      "url": "http://images.gotinder.com/518d666a2a00df0e490000b9/fea4f480-7ce0-4143-a310-a03c2b2cdbc6.jpg",
+      "fbId": "directupload",
       "extension": "jpg",
+      "fileName": "fea4f480-7ce0-4143-a310-a03c2b2cdbc6.jpg",
+      "successRate": 0.0262582056892779,
+      "selectRate": 0,
       "processedFiles": [{
                            "width": 640,
                            "height": 640,
@@ -26,15 +28,15 @@ RSpec.describe Photo do
                            "height": 84,
                            "url": "http://images.gotinder.com/518d666a2a00df0e490000b9/84x84_fea4f480-7ce0-4143-a310-a03c2b2cdbc6.jpg"
                          }],
-      "url": "http://images.gotinder.com/518d666a2a00df0e490000b9/fea4f480-7ce0-4143-a310-a03c2b2cdbc6.jpg"
+
     }
   }
-  let(:photo){Photo.new(data)}
+  let(:client_photo){ClientPhoto.new(data)}
 
   describe '#initialize' do
     it 'should have the expected properties' do
-      Photo::PROPERTIES.each do |p|
-        eval "expect(photo.#{p}).to eq(data[#{':' + p}])"
+      ClientPhoto::PROPERTIES.each do |p|
+        eval "expect(client_photo.#{p}).to eq(data[#{':' + p}])"
       end
     end
   end

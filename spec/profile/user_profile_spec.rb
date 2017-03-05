@@ -1,8 +1,10 @@
 require 'spec_helper'
-require_relative '../../lib/rinder/Profile/profile'
-require_relative '../../lib/rinder/Profile/photo'
+require_relative '../../lib/rinder/profile/profile'
+require_relative '../../lib/rinder/profile/photo'
 
-RSpec.describe Profile do
+RSpec.describe UserProfile do
+  # FIXME: Write helper to fetch the real recs in order to guarantee this mode is up-to-date.
+
   let(:data) {
     {
       "distance_mi": 3,

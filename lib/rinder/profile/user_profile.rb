@@ -1,6 +1,6 @@
 require 'date'
 
-class Profile
+class UserProfile
 
   PROPERTIES = %w(distance_mi common_like_count common_friend_count common_likes common_friends connection_count badges _id name birth_date gender bio ping_time photos jobs schools teaser teasers s_number).freeze
   PROPERTIES.map(&:to_sym).each { |p| attr_accessor p }
