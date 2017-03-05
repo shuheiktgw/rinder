@@ -1,16 +1,16 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'runder/version'
+require 'rinder/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "runder"
-  spec.version       = Runder::VERSION
+  spec.name          = "rinder"
+  spec.version       = Rinder::VERSION
   spec.authors       = ["Shuhei Kitagawa"]
   spec.email         = ["shuhei.kitagawa@gmail.com"]
 
   spec.summary       = %q{Ruby client for Tinder API}
-  spec.homepage      = "https://github.com/shuheiktgw/runder"
+  spec.homepage      = "https://github.com/shuheiktgw/rinder"
   spec.license       = "MIT"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'

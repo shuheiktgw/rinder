@@ -1,5 +1,5 @@
 require "spec_helper"
-require_relative '../lib/runder/tinder_client'
+require_relative '../lib/rinder/tinder_client'
 
 RSpec.describe TinderClient do
 

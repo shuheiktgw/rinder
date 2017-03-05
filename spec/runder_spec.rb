@@ -1,8 +1,8 @@
 require "spec_helper"
 
-RSpec.describe Runder do
+RSpec.describe Rinder do
   it "has a version number" do
-    expect(Runder::VERSION).not_to be nil
+    expect(Rinder::VERSION).not_to be nil
   end
 
   it "does something useful" do
