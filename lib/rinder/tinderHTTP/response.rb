@@ -13,6 +13,7 @@ class Response
       @recommendations
     end
 
+    instance
   end
 
   def initialize(res)
@@ -20,12 +21,7 @@ class Response
   end
 
   def method_missing(method, *args)
-    if method_name.to_s =~ /factory_(\w*)/
-      instance_variable_set('@' + $1, args[0])
-      self.class.send(:attr_reader, $1.to_sym)
-    else
-      faraday_response.send(method, *args)
-    end
+    faraday_response.send(method, *args)
   end
 
   def respond_to_missing?(method, include_private = false)
