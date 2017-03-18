@@ -11,7 +11,6 @@ class Profile
       elsif date_property?(p)
         eval "@#{p} = DateTime.parse(data[#{':' + p}])"
       else
-        puts p
         eval "@#{p} = data[#{':' + p}]"
       end
     end
