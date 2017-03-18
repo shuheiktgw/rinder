@@ -1,5 +1,6 @@
 require 'date'
 require_relative 'profile'
+require_relative './photo/user_photo'
 
 class UserProfile < Profile
 
