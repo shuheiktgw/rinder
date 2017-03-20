@@ -9,7 +9,7 @@ class Profile
       if p == 'photos'
         @photos = define_photos_property(data)
       elsif date_property?(p)
-        eval "@#{p} = DateTime.parse(data[#{':' + p}])"
+        eval "@#{p} = DateTime.parse(data[#{':' + p}]) unless data[#{':' + p}].nil?"
       else
         eval "@#{p} = data[#{':' + p}]"
       end

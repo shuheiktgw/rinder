@@ -2,13 +2,13 @@ require 'spec_helper'
 require_relative '../../lib/rinder/tinderHTTP/response'
 require_relative '../../lib/rinder/profile/user_profile'
 
-RSpec.describe UserProfile do
+RSpec.describe Response do
   # FIXME: Write helper to fetch the real recs in order to guarantee this mode is up-to-date.
 
   let(:data) {
     {
-      "status": 200,
-      "results": [
+      status: 200,
+      results: [
         {
           "distance_mi": 3,
           "connection_count": 322,

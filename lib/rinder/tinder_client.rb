@@ -18,6 +18,8 @@ class TinderClient
     request.like(user)
   end
 
+  private
+
   def initialize_request(email, password)
     Request.factory(email, password)
   end

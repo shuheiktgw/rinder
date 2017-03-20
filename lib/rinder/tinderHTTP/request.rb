@@ -2,6 +2,7 @@ require 'tinder_auth_fetcher'
 require 'faraday'
 require 'faraday_middleware'
 require 'json'
+require_relative '../../../lib/rinder/tinderHTTP/response'
 
 class Request
 
@@ -12,36 +13,35 @@ class Request
   attr_accessor :x_auth_token
 
   def self.factory(email, password)
-    res = authentication(email, password)
-    self.new(res["token"])
-  end
+    instance = new
+    res = instance.authentication(email, password)
 
-  def initialize(token)
-    @x_auth_token = { 'X-Auth-Token' => token }
+    instance.instance_variable_set(:@x_auth_token, { 'X-Auth-Token' => res.body["token"] })
+    instance
   end
 
   def recommendations
     res = get URLS[:recs], x_auth_token
-    res["results"].map { |r| Profile.new(r) }
+    Response.initialize_recommendations(res)
   end
 
   def like(user)
     get URLS[:like] + user._id, x_auth_token
   end
 
-  private
-
   def authentication(email, password)
     facebook_token = TinderAuthFetcher.fetch_token(email, password)
     post(URLS[:auth], facebook_token: facebook_token)
   end
+
+  private
 
   def post(url, body, opts = {})
     c = form_connection(opts)
     c.post url, body
   end
 
-  def get(url, opts={})
+  def get(url, opts = {})
     c = form_connection(opts)
     c.get url
   end

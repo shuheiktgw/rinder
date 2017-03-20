@@ -4,8 +4,8 @@ class Response
   attr_reader :faraday_response
 
   def self.initialize_recommendations(res)
-    instance = self.new(res)
-    recs = Array(res.body[:results]).map { |r| UserProfile.new(r) }
+    instance = new(res)
+    recs = Array(res.body["results"]).map { |r| UserProfile.new(r) }
 
     instance.instance_variable_set(:@recommendations, recs)
     def instance.recommendations
