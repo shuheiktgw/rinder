@@ -7,23 +7,26 @@ class Request
 
   USER_AGENT = 'Tinder/4.7.1 (iPhone; iOS 9.2; Scale/2.00)'.freeze
   BASE_URL = 'https://api.gotinder.com'.freeze
-  URLS = { auth: '/auth', recs: '/user/recs' }.freeze
+  URLS = { auth: '/auth', recs: '/user/recs', like: '/like/' }.freeze
 
   attr_accessor :x_auth_token
+
+  def self.factory(email, password)
+    res = authentication(email, password)
+    self.new(res["token"])
+  end
 
   def initialize(token)
     @x_auth_token = { 'X-Auth-Token' => token }
   end
 
-  def self.factory(email, password)
-    res = authentication(email, password)
-    instance = Request.new(res["token"])
-    return instance, res
-  end
-
   def recommendations
     res = get URLS[:recs], x_auth_token
-    users = res["results"].map { |r| Profile.new(r) }
+    res["results"].map { |r| Profile.new(r) }
+  end
+
+  def like(user)
+    get URLS[:like] + user._id, x_auth_token
   end
 
   private

@@ -2,28 +2,23 @@ require 'TinderHTTP/request'
 
 class TinderClient
 
-  attr_reader :token
+  attr_reader :email, :password, :request
 
   def initialize(email, password)
     @email = email
     @password = password
-    @request = Request.new(email, password)
-  end
-
-  def get_token(email, password)
-
-
-
-    # Store user infos in instance vars?
-
+    @request = initialize_request(email, password)
   end
 
   def get_recommendation
+    request.recommendations
+  end
 
-
+  def like(user)
+    request.like(user)
   end
 
   def initialize_request(email, password)
-    request, attrs = Request.new(email, password)
+    Request.factory(email, password)
   end
 end
