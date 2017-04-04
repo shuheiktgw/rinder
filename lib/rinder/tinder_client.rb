@@ -2,25 +2,23 @@ require 'TinderHTTP/request'
 
 class TinderClient
 
-  attr_reader :email, :password, :request
+  attr_reader :request
 
   def initialize(email, password)
-    @email = email
-    @password = password
-    @request = initialize_request(email, password)
+    @request = init_request(email, password)
   end
 
-  def get_recommendation
+  def get_recommendations
     request.recommendations
   end
 
-  def like(user)
-    request.like(user)
+  def like(recommendations, interval_sec = 0.5)
+    request.like(recommendations, interval_sec)
   end
 
   private
 
-  def initialize_request(email, password)
-    Request.factory(email, password)
+  def init_request(email, password)
+    TinderHTTP::Request.new(email, password)
   end
 end
