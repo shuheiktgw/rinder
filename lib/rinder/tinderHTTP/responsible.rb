@@ -3,33 +3,50 @@ module TinderHTTP
 
     def recommendations_handler
       ->(res) do
-        if !res.status.between?(200, 299)
-          users_struct([], "Something went wrong! status:#{res.status}, headers:#{res.headers}, body:#{res.body}"
+        if res.status.between?(400, 599)
+          response_struct(message: "Oops! Something seems wrong! status:#{res.status}, headers:#{res.headers}, body:#{res.body}")
         else
-          recs = res['results']
+          recs = res.body['results']
           non_outers = remove_outs(recs)
-          return users_struct([], 'You are out of likes today.') if non_outers.size == 0
+          return response_struct(message: 'You are out of likes today.') if non_outers.empty?
 
-          users_struct(non_outers)
+          response_struct(result: non_outers)
         end
       end
     end
 
-    def authentication_handler
+    def like_handler
+      ->(res) do
+        if res.status.between?(400, 599)
+          response_struct(message: "Oops! Something seems wrong! status:#{res.status}, headers:#{res.headers}, body:#{res.body}")
+        else
+          response_struct(result: res.body)
+        end
+      end
+    end
 
+    # raise an error intentionally to handle it in client class
+    def authentication_handler
+      ->(res) do
+        if res.status.between?(400, 599)
+          raise "Oops! Something seems wrong! status:#{res.status}, headers:#{res.headers}, body:#{res.body}"
+        else
+          res.body['token']
+        end
+      end
     end
 
     private
 
-    def users_struct(users, message = '')
+    def response_struct(result:, message: '')
       OpenStruct.new(
-        users: users,
+        result: result,
         message: message
       )
     end
 
     def remove_outs(recs)
-      recs.select{|r| !r.out_of_like?(r)}
+      recs.select { |r| !out_of_like?(r) }
     end
 
     def out_of_like?(rec)

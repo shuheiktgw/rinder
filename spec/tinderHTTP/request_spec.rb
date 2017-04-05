@@ -16,21 +16,21 @@ RSpec.describe TinderHTTP::Request do
     end
 
     describe '#recommendations' do
-      it 'should return recommendations' do
+      it 'shoutinld return recommendations' do
         recs = @request.recommendations
-        expect(recs.status).to eq(200)
+        expect(recs.result.length).not_to eq(0)
+        expect(recs.message).to be_empty
       end
     end
 
     describe '#like' do
-      it 'should be able to like users' do
-        while true
-          recs = @request.recommendations
-          recs.body['results'].each do |r|
-            puts r
-            res = @request.like(r)
-            expect(res.status).to eq(200)
-          end
+      it 'should be able to like user' do
+        recs = @request.recommendations
+        recs.result.each do |r|
+          puts r
+          res = @request.like(r)
+          puts res.result
+          expect(res.message).to be_empty
         end
       end
     end

@@ -2,7 +2,7 @@ require 'tinder_auth_fetcher'
 require 'faraday'
 require 'faraday_middleware'
 require 'json'
-require './tinderHTTP/responsible'
+require_relative '../tinderHTTP/responsible'
 
 module TinderHTTP
   class Request
@@ -18,24 +18,17 @@ module TinderHTTP
     def initialize(email, password)
       @email = email
       @password = password
-      res = authenticate(email, password)
-      @x_auth_token = { 'X-Auth-Token' => res.body['token'] }
+      token = authenticate(email, password)
+      @x_auth_token = { 'X-Auth-Token' => token }
     end
 
     def recommendations
-      get URLS[:recs], x_auth_token, recommendations_handler
+      get url: URLS[:recs], opts: x_auth_token, response_handler: recommendations_handler
     end
 
-    # TODO: If user's "name" attribute is "Tinder Team", you are out of likes so write a piece of code to handle it
-    def like(recs, sleep_sec = 0.5)
-      recs['results'].each do |r|
-
-
-      end
-
-
-
-      res = get URLS[:like] + user['_id'], x_auth_token
+    # {"match"=>false, "likes_remaining"=>100}
+    def like(rec, sleep_sec = 0.5)
+      res = get url: URLS[:like] + rec['_id'], opts: x_auth_token, response_handler: like_handler
       sleep sleep_sec
       res
     end
@@ -44,15 +37,15 @@ module TinderHTTP
 
     def authenticate(email, password)
       facebook_token = TinderAuthFetcher.fetch_token(email, password)
-      post(URLS[:auth], facebook_token: facebook_token)
+      post(url: URLS[:auth], body: { facebook_token: facebook_token }, response_handler: authentication_handler)
     end
 
-    def post(url, body, opts = {}, response_handler = nil)
-      connect(opts, response_handler){ |c| c.post url, body }
+    def post(url:, body:, opts: {}, response_handler: nil)
+      connect(opts, response_handler) { |c| c.post url, body }
     end
 
-    def get(url, opts = {}, response_handler = nil)
-      connect(opts, response_handler){ |c| c.get url }
+    def get(url:, opts: {}, response_handler: nil)
+      connect(opts, response_handler) { |c| c.get url }
     end
 
     def connect(opts, response_handler)
