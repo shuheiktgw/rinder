@@ -27,9 +27,7 @@ RSpec.describe TinderHTTP::Request do
       it 'should be able to like user' do
         recs = @request.recommendations
         recs.result.each do |r|
-          puts r
           res = @request.like(r)
-          puts res.result
           expect(res.message).to be_empty
         end
       end
