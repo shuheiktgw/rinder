@@ -51,6 +51,14 @@ RSpec.describe TinderHTTP::Request do
       end
     end
 
+    describe '#meta' do
+      it 'should get meta data' do
+        res = @request.meta
+        puts res.result
+        expect(res.error).to be_empty
+      end
+    end
+
     describe '#ping' do
       it 'should be able to change location' do
         lat = 35.689407
