@@ -18,17 +18,16 @@ module TinderHTTP
     def initialize(email, password)
       @email = email
       @password = password
-      token = authenticate(email, password)
-      @x_auth_token = { 'X-Auth-Token' => token }
+      @x_auth_token = { 'X-Auth-Token' => authenticate(email, password)[:result] }
     end
 
     def recommendations
-      get url: URLS[:recs], opts: x_auth_token, response_handler: recommendations_handler
+      get url: URLS[:recs], opts: x_auth_token, response_handler: RECOMMENDATIONS_HANDLER
     end
 
     # {"match"=>false, "likes_remaining"=>100}
     def like(rec, sleep_sec = 0.5)
-      res = get url: URLS[:like] + rec['_id'], opts: x_auth_token, response_handler: like_handler
+      res = get url: URLS[:like] + rec['_id'], opts: x_auth_token, response_handler: LIKE_HANDLER
       sleep sleep_sec
       res
     end
@@ -37,7 +36,7 @@ module TinderHTTP
 
     def authenticate(email, password)
       facebook_token = TinderAuthFetcher.fetch_token(email, password)
-      post(url: URLS[:auth], body: { facebook_token: facebook_token }, response_handler: authentication_handler)
+      post(url: URLS[:auth], body: { facebook_token: facebook_token }, response_handler: AUTHENTICATION_HANDLER)
     end
 
     def post(url:, body:, opts: {}, response_handler: nil)

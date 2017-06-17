@@ -1,56 +1,56 @@
 module TinderHTTP
   module Responsible
 
-    def recommendations_handler
-      ->(res) do
+    RECOMMENDATIONS_HANDLER =
+      lambda do |res|
         if res.status.between?(400, 599)
-          response_struct(message: "Oops! Something seems wrong! status:#{res.status}, headers:#{res.headers}, body:#{res.body}")
+          response_struct(error: "Oops! Something seems wrong! status:#{res.status}, headers:#{res.headers}, body:#{res.body}", raw_response: res)
         else
           recs = res.body['results']
           non_outers = remove_outs(recs)
-          return response_struct(message: 'You are out of likes today.') if non_outers.empty?
+          return response_struct(error: 'You are out of likes today.', raw_response: res) if non_outers.empty?
 
-          response_struct(result: non_outers)
+          response_struct(result: non_outers, raw_response: res)
         end
       end
-    end
 
-    def like_handler
-      ->(res) do
+
+    LIKE_HANDLER =
+      lambda do |res|
         if res.status.between?(400, 599)
           response_struct(message: "Oops! Something seems wrong! status:#{res.status}, headers:#{res.headers}, body:#{res.body}")
         else
-          response_struct(result: res.body)
+          response_struct(result: res.body, raw_response: res)
         end
       end
-    end
 
-    # raise an error intentionally to handle it in client class
-    def authentication_handler
-      ->(res) do
+    AUTHENTICATION_HANDLER =
+      lambda do |res|
         if res.status.between?(400, 599)
-          raise "Oops! Something seems wrong! status:#{res.status}, headers:#{res.headers}, body:#{res.body}"
+          response_struct(message: "Oops! Something seems wrong! status:#{res.status}, headers:#{res.headers}, body:#{res.body}")
         else
-          res.body['token']
+          response_struct(result: res.body['token'], raw_response: res)
         end
       end
-    end
 
-    private
+    class << self
+      private
 
-    def response_struct(result:, message: '')
-      OpenStruct.new(
-        result: result,
-        message: message
-      )
-    end
+      def response_struct(result: '', error: '', raw_response: '')
+        OpenStruct.new(
+          result: result,
+          error: error,
+          raw_response: raw_response
+        )
+      end
 
-    def remove_outs(recs)
-      recs.select { |r| !out_of_like?(r) }
-    end
+      def remove_outs(recs)
+        recs.select { |r| !out_of_like?(r) }
+      end
 
-    def out_of_like?(rec)
-      rec['name'] == 'Tinder Team'
+      def out_of_like?(rec)
+        rec['name'] == 'Tinder Team'
+      end
     end
   end
 end

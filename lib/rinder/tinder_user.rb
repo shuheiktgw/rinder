@@ -1,2 +1,0 @@
-class TinderUser
-end

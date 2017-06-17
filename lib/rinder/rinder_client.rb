@@ -1,6 +1,6 @@
 require 'TinderHTTP/request'
 
-class TinderClient
+class RinderClient
 
   attr_reader :request
 
