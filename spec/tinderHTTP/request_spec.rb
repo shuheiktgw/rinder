@@ -40,6 +40,16 @@ RSpec.describe TinderHTTP::Request do
         end
       end
     end
+
+    describe '#ping' do
+      it 'should be able to change location' do
+        lat = 35.689407
+        lon = 139.700306
+
+        res = @request.ping(lat: lat, lon: lon)
+        expect(res.error).to be_empty
+      end
+    end
   end
 end
 

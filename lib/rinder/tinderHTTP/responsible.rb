@@ -15,10 +15,10 @@ module TinderHTTP
       end
 
 
-    LIKE_HANDLER =
+    BASIC_HANDLER =
       lambda do |res|
         if res.status.between?(400, 599)
-          response_struct(message: "Oops! Something seems wrong! status:#{res.status}, headers:#{res.headers}, body:#{res.body}")
+          response_struct(error: "Oops! Something seems wrong! status:#{res.status}, headers:#{res.headers}, body:#{res.body}")
         else
           response_struct(result: res.body, raw_response: res)
         end
@@ -27,7 +27,7 @@ module TinderHTTP
     AUTHENTICATION_HANDLER =
       lambda do |res|
         if res.status.between?(400, 599)
-          response_struct(message: "Oops! Something seems wrong! status:#{res.status}, headers:#{res.headers}, body:#{res.body}")
+          response_struct(error: "Oops! Something seems wrong! status:#{res.status}, headers:#{res.headers}, body:#{res.body}")
         else
           response_struct(result: res.body['token'], raw_response: res)
         end

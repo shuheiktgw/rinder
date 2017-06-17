@@ -10,7 +10,7 @@ module TinderHTTP
 
     USER_AGENT = 'Tinder/4.7.1 (iPhone; iOS 9.2; Scale/2.00)'.freeze
     BASE_URL = 'https://api.gotinder.com'.freeze
-    URLS = { auth: '/auth', recs: '/user/recs', like: '/like/' }.freeze
+    URLS = { auth: '/auth', recs: '/user/recs', like: '/like/', ping: '/ping' }.freeze
 
     attr_accessor :x_auth_token
     attr_reader :email, :password
@@ -18,7 +18,8 @@ module TinderHTTP
     def initialize(email, password)
       @email = email
       @password = password
-      @x_auth_token = { 'X-Auth-Token' => authenticate(email, password)[:result] }
+      @facebook_token = TinderAuthFetcher.fetch_token(email, password)
+      @x_auth_token = { 'X-Auth-Token' => authenticate[:result] }
     end
 
     def recommendations
@@ -27,20 +28,24 @@ module TinderHTTP
 
     # {"match"=>false, "likes_remaining"=>100}
     def like(rec, sleep_sec = 0.5)
-      res = get url: URLS[:like] + rec['_id'], opts: x_auth_token, response_handler: LIKE_HANDLER
+      res = get url: URLS[:like] + rec['_id'], opts: x_auth_token, response_handler: BASIC_HANDLER
       sleep sleep_sec
       res
     end
 
-    private
-
-    def authenticate(email, password)
-      facebook_token = TinderAuthFetcher.fetch_token(email, password)
-      post(url: URLS[:auth], body: { facebook_token: facebook_token }, response_handler: AUTHENTICATION_HANDLER)
+    def ping(lat:, lon:)
+      post(url: URLS[:auth], body: { lat: lat, lon: lon }, opts: x_auth_token, response_handler: BASIC_HANDLER)
     end
 
-    def post(url:, body:, opts: {}, response_handler: nil)
-      connect(opts, response_handler) { |c| c.post url, body }
+    private
+
+    def authenticate
+      post(url: URLS[:auth], response_handler: AUTHENTICATION_HANDLER)
+    end
+
+    def post(url:, body:{}, opts: {}, response_handler: nil)
+      b = { facebook_token: @facebook_token }.merge(body)
+      connect(opts, response_handler) { |c| c.post url, b }
     end
 
     def get(url:, opts: {}, response_handler: nil)
