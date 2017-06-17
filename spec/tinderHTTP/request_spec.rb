@@ -41,6 +41,16 @@ RSpec.describe TinderHTTP::Request do
       end
     end
 
+    describe '#pass' do
+      it 'should be able to pass user' do
+        recs = @request.recommendations
+        recs.result.each do |r|
+          res = @request.pass(r)
+          expect(res.error).to be_empty
+        end
+      end
+    end
+
     describe '#ping' do
       it 'should be able to change location' do
         lat = 35.689407

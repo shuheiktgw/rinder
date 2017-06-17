@@ -10,7 +10,7 @@ module TinderHTTP
 
     USER_AGENT = 'Tinder/4.7.1 (iPhone; iOS 9.2; Scale/2.00)'.freeze
     BASE_URL = 'https://api.gotinder.com'.freeze
-    URLS = { auth: '/auth', recs: '/user/recs', like: '/like/', ping: '/ping' }.freeze
+    URLS = { auth: '/auth', recs: '/user/recs', like: '/like/', pass: '/pass/', ping: '/ping' }.freeze
 
     attr_accessor :x_auth_token
     attr_reader :email, :password
@@ -29,6 +29,12 @@ module TinderHTTP
     # {"match"=>false, "likes_remaining"=>100}
     def like(rec, sleep_sec = 0.5)
       res = get url: URLS[:like] + rec['_id'], opts: x_auth_token, response_handler: BASIC_HANDLER
+      sleep sleep_sec
+      res
+    end
+
+    def pass(rec, sleep_sec = 0.5)
+      res = get url: URLS[:pass] + rec['_id'], opts: x_auth_token, response_handler: BASIC_HANDLER
       sleep sleep_sec
       res
     end
