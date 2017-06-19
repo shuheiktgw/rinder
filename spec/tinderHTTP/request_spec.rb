@@ -54,7 +54,13 @@ RSpec.describe TinderHTTP::Request do
     describe '#meta' do
       it 'should get meta data' do
         res = @request.meta
-        puts res.result
+        expect(res.error).to be_empty
+      end
+    end
+
+    describe '#friends' do
+      it 'should get Facebook friends data' do
+        res = @request.friends
         expect(res.error).to be_empty
       end
     end

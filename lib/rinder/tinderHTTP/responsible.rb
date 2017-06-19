@@ -24,6 +24,15 @@ module TinderHTTP
         end
       end
 
+    FRIENDS_HANDLER =
+      lambda do |res|
+        if res.status.between?(400, 599)
+          response_struct(error: "Oops! Something seems wrong! status:#{res.status}, headers:#{res.headers}, body:#{res.body}")
+        else
+          response_struct(result: res.body['results'], raw_response: res)
+        end
+      end
+
     AUTHENTICATION_HANDLER =
       lambda do |res|
         if res.status.between?(400, 599)

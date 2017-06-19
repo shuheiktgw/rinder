@@ -16,6 +16,8 @@ module TinderHTTP
       like: '/like/',
       pass: '/pass/',
       meta: '/meta',
+      friends: '/group/friends',
+      user: '/user/',
       ping: '/user/ping'
     }.freeze
 
@@ -33,13 +35,13 @@ module TinderHTTP
       get url: URLS[:recs], opts: x_auth_token, response_handler: RECOMMENDATIONS_HANDLER
     end
 
-    def like(rec, sleep_sec = 0.5)
+    def like(rec, sleep_sec = 1)
       res = get url: URLS[:like] + rec['_id'], opts: x_auth_token, response_handler: BASIC_HANDLER
       sleep sleep_sec
       res
     end
 
-    def pass(rec, sleep_sec = 0.5)
+    def pass(rec, sleep_sec = 1)
       res = get url: URLS[:pass] + rec['_id'], opts: x_auth_token, response_handler: BASIC_HANDLER
       sleep sleep_sec
       res
@@ -47,6 +49,14 @@ module TinderHTTP
 
     def meta
       get url: URLS[:meta], opts: x_auth_token, response_handler: BASIC_HANDLER
+    end
+
+    def friends
+      get url: URLS[:friends], opts: x_auth_token, response_handler: FRIENDS_HANDLER
+    end
+
+    def user(id)
+      get url: URLS[:pass] + id, opts: x_auth_token, response_handler: BASIC_HANDLER
     end
 
     def ping(lat:, lon:)
